@@ -1,0 +1,85 @@
+Preparando o banco com statisticas 
+
+sysbench \
+--db-driver=pgsql \
+--oltp-table-size=100000 \
+--oltp-tables-count=24 \
+--threads=1 \
+--pgsql-host=localhost \
+--pgsql-port=5432 \
+--pgsql-user=sbtest \
+--pgsql-password=sbtest \
+--pgsql-db=sbtest \
+/usr/share/sysbench/tests/include/oltp_legacy/parallel_prepare.lua \
+run
+
+
+O comando acima gera 100.000 linhas por tabela para 24 tabelas
+
+
+Read/Write Load
+
+sysbench \
+--db-driver=pgsql \
+--report-interval=2 \
+--oltp-table-size=100000 \
+--oltp-tables-count=24 \
+--threads=64 \
+--time=60 \
+--pgsql-host=localhost \
+--pgsql-port=5432 \
+--pgsql-user=sbtest \
+--pgsql-password=sbtest \
+--pgsql-db=sbtest \
+/usr/share/sysbench/tests/include/oltp_legacy/oltp.lua \
+run
+
+O comando acima irá gerar a carga de trabalho OLTP do script LUA chamado /usr/share/sysbench/tests/include/oltp_legacy/oltp.lua, contra 100.000 linhas de 24 tabelas com 64 threads de trabalho por 60 segundos no host 192.168.55.61 (mestre ) A cada 2 segundos, o sysbench relatará as estatísticas intermediárias (--report-interval = 2).
+
+
+Read-Only Load 
+
+sysbench \
+--db-driver=pgsql \
+--report-interval=2 \
+--oltp-table-size=100000 \
+--oltp-tables-count=24 \
+--threads=64 \
+--time=60 \
+--pgsql-host=localhost \
+--pgsql-port=5432 \
+--pgsql-user=sbtest \
+--pgsql-password=sbtest \
+--pgsql-db=sbtest \
+/usr/share/sysbench/tests/include/oltp_legacy/select.lua \
+run
+
+Delete
+
+sysbench \
+--db-driver=pgsql \
+--oltp-table-size=100000 \
+--oltp-tables-count=24 \
+--threads=1 \
+--pgsql-host=localhost \
+--pgsql-port=5432 \
+--pgsql-user=sbtest \
+--pgsql-password=sbtest \
+--pgsql-db=sbtest \
+/usr/share/sysbench/tests/include/oltp_legacy/delete.lua \
+run
+
+Cleanup
+
+sysbench \
+--db-driver=pgsql \
+--oltp-table-size=100000 \
+--oltp-tables-count=24 \
+--threads=1 \
+--pgsql-host=localhost \
+--pgsql-port=5432 \
+--pgsql-user=sbtest \
+--pgsql-password=sbtest \
+--pgsql-db=sbtest \
+/usr/share/sysbench/tests/include/oltp_legacy/delete.lua \
+cleanup
